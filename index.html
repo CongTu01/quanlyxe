@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Xe Cộ </title>
+    <style>
+        .col-sm-6 {
+            background-color: aquamarine;
+        }
+
+        table #myTable tr:hover {
+            background-color: #6ea5d6;
+        }
+
+        table #myTable tr {
+            background-color: #d9edf7;
+        }
+
+        table #myTable tr:focus {
+            background-color: #6ea5d6;
+            outline: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-5">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"> NHẬP THÔNG TIN XE CỘ </div>
+                    <div class="panel-body">
+                        <form class="needs-validation" action="#" onsubmit="return false">
+                            <div class="form-group">
+                                <label for="name">Tên xe <span style="color:red">*</span>:</label>
+                                <input type="text" class="form-control" id="name" placeholder="Tên xe..." name="name"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="img">Hình ảnh: </label>
+                                <input type="text" class="form-control" id="img" placeholder="link url..." name="img">
+                            </div>
+                            <div class="form-group">
+                                <label for="hang">Hãng xe<span style="color:red">*</span>:</label>
+                                <select id="hang" class="form-control" aria-label="Default select example" required>
+                                    <option value="" disabled selected>-- Hãng xe --</option>
+                                    <optgroup style="font-style: italic;" label= "Swedish Cars">
+                                        <option style="font-style: normal;" value="Volvo">Volvo</option>
+                                        <option style="font-style: normal;" value="Saab">Saab</option>
+                                    </optgroup>
+                                    <optgroup style="font-style: italic;"  label="German Cars">
+                                        <option style="font-style: normal;" value="Mercedes">Mercedes</option>
+                                        <option  style="font-style: normal;" value="Audi">Audi</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="money">Giá tiền<span style="color:red">*</span>:</label>
+                                <input type="number" class="form-control" id="money" min="0" name="money" step="any" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Mô tả:</label>
+                                <textarea class="form-control" rows="5" id="comment"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="nguoi">Người liên hệ<span style="color:red">*</span>: </label>
+                                <input type="text" class="form-control" id="nguoi" name="nguoi" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Số điện thoại người liên hệ<span style="color:red">*</span>:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">+84</span>
+                                    <input type="tel" class="form-control" id="phone" pattern='(^[1-9])+([0-9]{8,20})$'
+                                    value="" name="phone" required>
+                                  </div>
+                               
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email<span style="color:red">*</span>:</label>
+                                <input type="email" class="form-control" id="pwd" placeholder="Enter Email" name="email"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn btn-success save">Lưu</button>
+                            <button type="button" class="btn btn-warning delete">Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">QUẢN LÝ DANH SÁCH XE CỘ</div>
+                    <div class="panel-body">
+                        <input class="form-control" id="myInput" type="text" placeholder="Tìm kiếm...">
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên xe</th>
+                                        <th>Hãng xe</th>
+                                        <th>Giá tiền</th>
+                                        <th>Người liên hệ</th>
+                                        <th>Điện thoại</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="myTable">
+
+                                </tbody>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+            let indext = 0;
+
+            function validatePhone($txtPhone) {
+                var filter = /(^[1-9])+([0-9]{8,20})$/;
+                return filter.test($txtPhone);
+            }
+
+            function validateEmail($email) {
+                var check = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,3})?$/;
+                return check.test($email);
+            }
+            let i = 0;
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+
+            function reset() {
+                $("#comment").val("");
+                $("[name=name]").val("");
+                $("[name=img]").val("");
+                $("#hang ").val("");
+                $("[name=money]").val("");
+                $("[name=nguoi]").val("");
+                $("[name=phone]").val("");
+                $("[name=email]").val("");
+                $("#myInput").val("");
+            }
+            const datalist = new Array();
+            $(".save").click(function () {
+                const mota = $("#comment").val().trim();
+                const tenxe = $("[name=name]").val().trim();
+                const hinhanh = $("[name=img]").val().trim();
+                const hang = $("#hang ").val();
+                const giatien = $("[name=money]").val().trim();
+                const nguoilienhe = $("[name=nguoi]").val().trim();
+                const dienthoai = $("[name=phone]").val().trim();
+                const email = $("[name=email]").val().trim();
+                console.log(mota, tenxe, hinhanh, hang);
+                if (tenxe == "" || hang == null || giatien == "" || nguoilienhe == "" ||
+                    dienthoai == "" || email == "") {
+                    alert("Mời nhập đầy đủ thông tin !!!");
+                } else if (giatien < 0) {
+                    alert("Giá tiền phải lớn > 0 !!!")
+
+                } else if (!validatePhone(dienthoai)) {
+                    alert("Số điện thoại phải có ít nhất 9 số và không chứa kí tự đặc biệt \n Số bắt đầu phải khác 0 !!!");
+                } else if (!validateEmail(email)) {
+                    alert("Email chưa đúng định dạng !!!");
+                } else {
+                    i++;
+                    datalist[datalist.length] = {
+                        mota: mota,
+                        tenxe: tenxe,
+                        hinhanh: hinhanh,
+                        hang: hang,
+                        giatien: giatien,
+                        nguoilienhe: nguoilienhe,
+                        dienthoai: dienthoai,
+                        email: email
+                    }
+                    $("#myTable").append(` <tr class="listds" id="${i}" tabindex="0">
+                                                <td>${i}</td>
+                                                <td style="display: flex;align-items: center;justify-content: space-evenly;"><img width="50px"src="${hinhanh}" alt="Lỗi ảnh"></td>
+                                                <td>${tenxe}</td>
+                                                <td>${hang}</td>
+                                                <td>${giatien}</td>
+                                                <td>${nguoilienhe}</td>
+                                                <td>+84${dienthoai}</td>
+                                                <td>${email}</td>
+                                            
+                                            </tr>`);
+                }
+                $(".listds").click(function () {
+                    $name1 = $(this).find('td:nth-child(1)').text();
+                    $("[name=name]").val($(this).find('td:nth-child(3)').text());
+                    $("[name=img]").val($(this).find('td:nth-child(2)').find('img').attr('src'));
+                    $("#hang").val($(this).find('td:nth-child(4)').text());
+                    $("#comment").val(datalist[$name1 - 1].mota);
+                    $("[name=money]").val($(this).find('td:nth-child(5)').text());
+                    $("[name=nguoi]").val($(this).find('td:nth-child(6)').text());
+                    $("[name=phone]").val(datalist[$name1 - 1].dienthoai);
+                    $("[name=email]").val($(this).find('td:nth-child(8)').text());
+                    indext = $name1;
+                });
+            })
+            $(".delete").on('click', function () {
+                if (indext != 0) {
+                    var check = confirm("Bạn có muốn xóa hàng " + indext);
+                    if (check) {
+                        i = datalist.length - 1;
+                        $(`#${indext}`).remove();
+                        $("#myTable").empty();
+                        datalist.splice(indext - 1, 1);
+                        indext = 0;
+
+                        for (var x = 0; x < datalist.length; x++) {
+                            $("#myTable").append(` <tr class="listds" id="${x+1}" tabindex="0">
+                                                <td>${x+1}</td>
+                                                <td style="display: flex;align-items: center;justify-content: space-evenly;"><img alt="Lỗi ảnh" width="50px"src="${datalist[x].hinhanh}" ></td>
+                                                <td>${datalist[x].tenxe}</td>
+                                                <td>${datalist[x].hang}</td>
+                                                <td>${datalist[x].giatien}</td>
+                                                <td>${datalist[x].nguoilienhe}</td>
+                                                <td>+84${datalist[x].dienthoai}</td>
+                                                <td>${datalist[x].email}</td>
+                                            </tr>`);
+                        };
+                        reset();
+                        $(".listds").click(function () {
+                            $name1 = $(this).find('td:nth-child(1)').text();
+                            $("[name=name]").val($(this).find('td:nth-child(3)').text());
+                            $("[name=img]").val($(this).find('td:nth-child(2)').find('img').attr('src'));
+                            $("#hang").val($(this).find('td:nth-child(4)').text());
+                            $("[name=money]").val($(this).find('td:nth-child(5)').text());
+                            $("[name=nguoi]").val($(this).find('td:nth-child(6)').text());
+                            $("[name=phone]").val(datalist[$name1 - 1].dienthoai);
+                            $("[name=email]").val($(this).find('td:nth-child(8)').text());
+                            $("#comment").val(datalist[$name1 - 1].mota);
+                            indext = $name1;
+                        });
+                    }
+                } else {
+                    alert("Mời nhập ô muốn xóa !!");
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
